@@ -15,7 +15,9 @@ This syntax file allows vim to understand the Slurm option and highlight them ac
 __Installation__
 
 Under Linux or MacOS, simply copy the file in the directory
-	.vim/after/syntax/sh/
+
+    .vim/after/syntax/sh/
+
 or whatever shell other than ``sh`` you prefer. 
 
 The syntax file is then read and applied on a Shell script after the usual syntax file has been processed. 
