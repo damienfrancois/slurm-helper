@@ -16,7 +16,11 @@ __Installation__
 
 Under Linux or MacOS, simply copy the file in the directory
 
+<<<<<<< HEAD
     .vim/after/syntax/sh/
+=======
+	.vim/after/syntax/sh/
+>>>>>>> Updated README with Bash completion script info
 
 or whatever shell other than ``sh`` you prefer. 
 
@@ -26,3 +30,20 @@ __Known issues__
 
 * Some regex needed to validate options or parameter values are not exactly correct, but should work in most cases. 
 * Any new option unknown to the syntax file will be spotted as an error. 
+
+Bash completion
+---------------
+
+The Bash completion script offers <TAB> completion for Slurm commands. 
+
+At present the following Slurm commands are considered
+* scontrol
+* sreport
+
+__Instalation__
+
+Simply source the script in your .bashrc or .profile
+
+__Knwon issues__
+
+Keyword arguments are not auto-compelted beyond the first one.
