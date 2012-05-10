@@ -1,3 +1,11 @@
+# Bash completion for Slurm
+# Maintainer: Dr. Damien François. <damien.francois@uclouvain.Be>
+# Last Change: April 11, 2012
+# Version: 091
+# URL: http://perso.uclouvain.be/damien.francois
+
+
+
 _scontrol()
 {
 	local cur=${COMP_WORDS[COMP_CWORD]}
