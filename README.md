@@ -16,11 +16,7 @@ __Installation__
 
 Under Linux or MacOS, simply copy the file in the directory
 
-<<<<<<< HEAD
     .vim/after/syntax/sh/
-=======
-	.vim/after/syntax/sh/
->>>>>>> Updated README with Bash completion script info
 
 or whatever shell other than ``sh`` you prefer. 
 
