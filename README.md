@@ -27,6 +27,30 @@ __Known issues__
 * Some regex needed to validate options or parameter values are not exactly correct, but should work in most cases. 
 * Any new option unknown to the syntax file will be spotted as an error. 
 
+Emacs syntax file
+-----------------
+
+The Emacs syntax file highlights SBATCH comments in a font distinct from other comments. 
+
+__Installation__
+
+Under Linux or MacOS, simply copy the file in your emacs path directory, e.g.
+
+    .emacs.d
+
+and add
+
+    (add-to-list 'load-path "~/.emacs.d/")
+
+    (require 'slurm-mode)
+    (add-hook 'sh-mode-hook 'turn-on-slurm-mode)
+
+to your .emacs file
+
+__Known issues__
+
+* Very basic syntax highlighting without any syntax checking, contrarily to the Vim version.
+
 Bash completion
 ---------------
 
