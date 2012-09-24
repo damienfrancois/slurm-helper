@@ -40,7 +40,24 @@
              nil nil nil nil nil nil nil)
 
 (defvar slurm-search-list-re
-  "#SBATCH --\\(constraint\\|account\\|acctg-freq\\|extra-node-info\\|socket-per-node\\|cores-per-socket\\|threads-per-core\\|begin\\|checkpoint\\|checkpoint-dir\\|comment\\|constraint\\|contiguous\\|cpu-bind\\|cpus-per-task\\|dependency\\|workdir\\|error\\|exclusive\\|nodefile\\|get-user-env\\|get-user-env\\|gid\\|hint\\|immediate\\|input\\|job-name\\|job-id\\|no-kill\\|licences\\|distribution\\|mail-user\\|mail-type\\|mem\\|mem-per-cpu\\|mem-bind\\|mincores\\|mincpus\\|minsockets\\|minthreads\\|nodes\\|ntasks\\|network\\|nice\\|nice\\|no-requeue\\|ntasks-per-core\\|ntasks-per-socket\\|ntasls-per-node\\|overcommit\\|output\\|open-mode\\|partition\\|propagate\\|propagate\\|quiet\\|requeue\\|reservation\\|share\\|signal\\|time\\|tasks-per-node\\|tmp\\|uid\\|nodelist\\|wckey\\|wrap\\|exclude\\).*$"
+  (concat
+   "^\\s *\\(#SBATCH\\s +--"
+   (regexp-opt
+    '("account"         "acctg-freq"        "begin"           "checkpoint"   "checkpoint-dir"
+      "comment"         "constraint"        "constraint"      "contiguous"   "cores-per-socket"
+      "cpu-bind"        "cpus-per-task"     "dependency"      "distribution" "error"
+      "exclude"         "exclusive"         "extra-node-info" "get-user-env" "get-user-env"
+      "gid"             "hint"              "immediate"       "input"        "job-id"
+      "job-name"        "licences"          "mail-type"       "mail-user"    "mem"
+      "mem-bind"        "mem-per-cpu"       "mincores"        "mincpus"      "minsockets"
+      "minthreads"      "network"           "nice"            "nice"         "no-kill"
+      "no-requeue"      "nodefile"          "nodelist"        "nodes"        "ntasks"
+      "ntasks-per-core" "ntasks-per-socket" "ntasls-per-node" "open-mode"    "output"
+      "overcommit"      "partition"         "propagate"       "propagate"    "quiet"
+      "requeue"         "reservation"       "share"           "signal"       "socket-per-node"
+      "tasks-per-node"  "threads-per-core"  "time"            "tmp"          "uid"
+      "wckey"           "workdir"           "wrap"))
+   "\\s +.*\\)$")
   "Regular expression matching SBATCH directives in a SLURM job submission script.")
 
 ;;;###autoload
@@ -48,7 +65,7 @@
   "Highlight SBATCH directives in a SLURM job submission script."
   :lighter " slurm"
   :group 'slurm-mode
-  (let ((kwlist `((,slurm-search-list-re 0 font-lock-slurm-face t))))
+  (let ((kwlist `((,slurm-search-list-re 1 font-lock-slurm-face t))))
     (if slurm-mode
         (font-lock-add-keywords nil kwlist)
       (font-lock-remove-keywords nil kwlist))))
