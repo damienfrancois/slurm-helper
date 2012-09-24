@@ -40,33 +40,15 @@
              nil nil nil nil nil nil nil)
 
 (defvar slurm-search-list-re
-  "SBATCH --\\(constraint\\|account\\|acctg-freq\\|extra-node-info\\|socket-per-node\\|cores-per-socket\\|threads-per-core\\|begin\\|checkpoint\\|checkpoint-dir\\|comment\\|constraint\\|contiguous\\|cpu-bind\\|cpus-per-task\\|dependency\\|workdir\\|error\\|exclusive\\|nodefile\\|get-user-env\\|get-user-env\\|gid\\|hint\\|immediate\\|input\\|job-name\\|job-id\\|no-kill\\|licences\\|distribution\\|mail-user\\|mail-type\\|mem\\|mem-per-cpu\\|mem-bind\\|mincores\\|mincpus\\|minsockets\\|minthreads\\|nodes\\|ntasks\\|network\\|nice\\|nice\\|no-requeue\\|ntasks-per-core\\|ntasks-per-socket\\|ntasls-per-node\\|overcommit\\|output\\|open-mode\\|partition\\|propagate\\|propagate\\|quiet\\|requeue\\|reservation\\|share\\|signal\\|time\\|tasks-per-node\\|tmp\\|uid\\|nodelist\\|wckey\\|wrap\\|exclude\\).*$"
+  "#SBATCH --\\(constraint\\|account\\|acctg-freq\\|extra-node-info\\|socket-per-node\\|cores-per-socket\\|threads-per-core\\|begin\\|checkpoint\\|checkpoint-dir\\|comment\\|constraint\\|contiguous\\|cpu-bind\\|cpus-per-task\\|dependency\\|workdir\\|error\\|exclusive\\|nodefile\\|get-user-env\\|get-user-env\\|gid\\|hint\\|immediate\\|input\\|job-name\\|job-id\\|no-kill\\|licences\\|distribution\\|mail-user\\|mail-type\\|mem\\|mem-per-cpu\\|mem-bind\\|mincores\\|mincpus\\|minsockets\\|minthreads\\|nodes\\|ntasks\\|network\\|nice\\|nice\\|no-requeue\\|ntasks-per-core\\|ntasks-per-socket\\|ntasls-per-node\\|overcommit\\|output\\|open-mode\\|partition\\|propagate\\|propagate\\|quiet\\|requeue\\|reservation\\|share\\|signal\\|time\\|tasks-per-node\\|tmp\\|uid\\|nodelist\\|wckey\\|wrap\\|exclude\\).*$"
   "Regular expression matching SBATCH directives in a SLURM job submission script.")
-
-
-(defun slurm-in-doc/comment-region (pos)
-  (memq (get-char-property pos 'face)
-	(list font-lock-comment-face)))
-
-(defun slurm-search-for-keyword (limit)
-  (let ((match-data-to-set nil))
-    (save-match-data
-      (while (and (null match-data-to-set)
-		  (re-search-forward slurm-search-list-re limit t))
-	(if (and (slurm-in-doc/comment-region (match-beginning 0))
-		 (slurm-in-doc/comment-region (match-end 0)))
-	    (setq match-data-to-set (match-data)))))
-    (when match-data-to-set
-      (set-match-data match-data-to-set)
-      (goto-char (match-end 0))
-      t)))
 
 ;;;###autoload
 (define-minor-mode slurm-mode
   "Highlight SBATCH directives in a SLURM job submission script."
   :lighter " slurm"
   :group 'slurm-mode
-  (let ((kwlist '((slurm-search-for-keyword 0 font-lock-slurm-face t))))
+  (let ((kwlist `((,slurm-search-list-re 0 font-lock-slurm-face t))))
     (if slurm-mode
         (font-lock-add-keywords nil kwlist)
       (font-lock-remove-keywords nil kwlist))))
