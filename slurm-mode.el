@@ -71,8 +71,11 @@
       (font-lock-remove-keywords nil kwlist))))
 
 (defun turn-on-slurm-mode ()
-  "Turn slurm-mode on"
+  "Turn slurm-mode on."
   (interactive)
-  (slurm-mode 1))
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward slurm-search-list-re nil t)
+      (slurm-mode 1))))
 
 (provide 'slurm-mode)
