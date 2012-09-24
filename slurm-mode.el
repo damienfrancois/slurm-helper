@@ -27,17 +27,10 @@
 ;;
 ;; Derived from fic-mode.el by Trey Jackson
 
-(defcustom slurm-foreground-color "Blue"
-  "Font foreground colour for SBATCH directives in SLURM submission scripts."
-  :group 'slurm-mode)
-
-(defcustom font-lock-slurm-face 'font-lock-slurm-face
+(defcustom font-lock-slurm-face font-lock-type-face
   "Face name to use for SBATCH directives in SLURM submission scripts."
-  :group 'slurm-mode)
-
-(make-face 'font-lock-slurm-face)
-(modify-face 'font-lock-slurm-face slurm-foreground-color
-             nil nil nil nil nil nil nil)
+  :group 'slurm-mode
+  :type 'face)
 
 (defvar slurm-search-list-re
   (concat
