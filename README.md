@@ -30,7 +30,7 @@ __Known issues__
 Emacs syntax file
 -----------------
 
-The Emacs syntax file highlights SBATCH comments in a font distinct from other comments. 
+The Emacs syntax file highlights `SBATCH` comments in a font distinct from other comments.
 
 __Installation__
 
@@ -45,11 +45,12 @@ and add
     (require 'slurm-mode)
     (add-hook 'sh-mode-hook 'turn-on-slurm-mode)
 
-to your .emacs file
+to your `.emacs` or `.emacs.d/init.el` file
 
 __Known issues__
 
-* Very basic syntax highlighting without any syntax checking, contrarily to the Vim version.
+* Very basic syntax highlighting without any syntax checking (beyond arguments
+  spelling), contrarily to the Vim version.
 
 Nano syntax file
 -----------------
@@ -58,32 +59,34 @@ The Nano syntax file highlights SBATCH comments in a font distinct from other co
 
 __Installation__
 
-Under Linux or MacOS, simply copy the file in your emacs path directory, e.g.
+Under Linux or MacOS, simply copy the file in your nano directory, e.g.
 
     .nano.d
 
 and add
 
-    include ~/.nano/slurm.nanorc
+    include ~/.nano.d/slurm.nanorc
 
-to your .nanorc file
+to your `.nanorc` file
 
 __Known issues__
 
-* Very basic syntax highlighting without any syntax checking, contrarily to the Vim version.
+* Very basic syntax highlighting without any syntax checking, contrarily to the
+  Vim version.
+
 Bash completion
 ---------------
 
 The Bash completion script offers <TAB> completion for Slurm commands. 
 
 At present the following Slurm commands are considered
-* scontrol
-* sreport
+* `scontrol`
+* `sreport`
 
-__Instalation__
+__Installation__
 
-Simply source the script in your .bashrc or .profile
+Simply source the script in your `.bashrc` or `.profile`
 
-__Knwon issues__
+__Known issues__
 
-Keyword arguments are not auto-compelted beyond the first one.
+Keyword arguments are not auto-completed beyond the first one.
