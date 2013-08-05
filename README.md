@@ -72,7 +72,7 @@ Emacs syntax file
 The Emacs syntax file highlights `SBATCH` comments in a font distinct from other
 comments:
 
-![Example of slurm-mode highlighting](http://ffevotte.github.com/slurm-helper/slurm-mode.png)
+![Example of slurm-mode highlighting](http://damienfrancois.github.com/slurm-helper/slurm-mode.png)
 
 __Installation__
 
@@ -101,7 +101,7 @@ Emacs interface
 
 `slurm.el` provides a User Interface to slurm within Emacs:
 
-![Example of slurm.el interface](http://ffevotte.github.com/slurm-helper/slurm_jobsList.png)
+![Example of slurm.el interface](http://damienfrancois.github.com/slurm-helper/slurm_jobsList.png)
 
 __Installation__
 
