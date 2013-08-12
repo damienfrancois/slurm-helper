@@ -1,10 +1,12 @@
-;;; slurm-mode.el --- Show SBATCH options in special font
-;;--------------------------------------------------------------------
-;;
-;; Copyright (C) 2012, Damien François <damien.francois@uclouvain.be>
-;;
+;;; slurm-mode.el --- Edit SLURM job submission scripts
+
+;; Copyright (C) 2012, Damien François  <damien.francois@uclouvain.be>
+;;                     François Févotte <fevotte@gmail.com>
+
+;; Derived from fic-mode.el by Trey Jackson
+
 ;; This file is NOT part of Emacs.
-;;
+
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2 of
@@ -19,58 +21,132 @@
 ;; License along with this program; if not, write to the Free
 ;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 ;; MA 02111-1307 USA
+
+
+;;; Commentary:
+
+;; If you make improvements to this code or have suggestions, please do not hesitate to fork the
+;; repository or submit bug reports on github. The repository is at:
 ;;
-;; To use, save slurm-mode.el to a directory in your load-path.
-;;
-;; (require 'slurm-mode)
-;; (add-hook 'sh-mode-hook 'turn-on-slurm-mode)
-;;
-;; Derived from fic-mode.el by Trey Jackson
+;;     https://github.com/damienfrancois/slurm-helper
 
-(defcustom slurm-foreground-color "Blue"
-  "Font foreground colour"
-  :group 'slurm-mode)
+;;; Code:
 
-(defcustom font-lock-slurm-face 'font-lock-slurm-face
-  "variable storing the face for slurm mode"
-  :group 'slurm-mode)
+;;;###autoload
+(defcustom slurm-directives-face 'slurm-directives
+  "Face name to use for SBATCH directives in SLURM job submission scripts."
+  :group 'slurm
+  :type 'face)
 
-(make-face 'font-lock-slurm-face)
-(modify-face 'font-lock-slurm-face slurm-foreground-color
-             nil nil nil nil nil nil nil)
+;;;###autoload
+(defface slurm-directives nil
+  "Face to use for SBATCH directives in SLURM job submission scripts."
+  :group 'slurm)
+(copy-face 'font-lock-type-face 'slurm-directives)
 
-(defvar slurm-search-list-re "SBATCH --\\(constraint\\|account\\|acctg-freq\\|extra-node-info\\|socket-per-node\\|cores-per-socket\\|threads-per-core\\|begin\\|checkpoint\\|checkpoint-dir\\|comment\\|constraint\\|contiguous\\|cpu-bind\\|cpus-per-task\\|dependency\\|workdir\\|error\\|exclusive\\|nodefile\\|get-user-env\\|get-user-env\\|gid\\|hint\\|immediate\\|input\\|job-name\\|job-id\\|no-kill\\|licences\\|distribution\\|mail-user\\|mail-type\\|mem\\|mem-per-cpu\\|mem-bind\\|mincores\\|mincpus\\|minsockets\\|minthreads\\|nodes\\|ntasks\\|network\\|nice\\|nice\\|no-requeue\\|ntasks-per-core\\|ntasks-per-socket\\|ntasls-per-node\\|overcommit\\|output\\|open-mode\\|partition\\|propagate\\|propagate\\|quiet\\|requeue\\|reservation\\|share\\|signal\\|time\\|tasks-per-node\\|tmp\\|uid\\|nodelist\\|wckey\\|wrap\\|exclude\\).*$")
+(defvar slurm-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map (kbd "C-c C-d") 'slurm-insert-directive)
+    map)
+  "Keymap for `slurm-mode'.")
 
+(defconst slurm-keywords
+  '("account"         "acctg-freq"        "begin"           "checkpoint"   "checkpoint-dir"
+    "comment"         "constraint"        "constraint"      "contiguous"   "cores-per-socket"
+    "cpu-bind"        "cpus-per-task"     "dependency"      "distribution" "error"
+    "exclude"         "exclusive"         "extra-node-info" "get-user-env" "get-user-env"
+    "gid"             "hint"              "immediate"       "input"        "job-id"
+    "job-name"        "licences"          "mail-type"       "mail-user"    "mem"
+    "mem-bind"        "mem-per-cpu"       "mincores"        "mincpus"      "minsockets"
+    "minthreads"      "network"           "nice"            "nice"         "no-kill"
+    "no-requeue"      "nodefile"          "nodelist"        "nodes"        "ntasks"
+    "ntasks-per-core" "ntasks-per-socket" "ntasks-per-node" "open-mode"    "output"
+    "overcommit"      "partition"         "propagate"       "propagate"    "quiet"
+    "requeue"         "reservation"       "share"           "signal"       "socket-per-node"
+    "tasks-per-node"  "threads-per-core"  "time"            "tmp"          "uid"
+    "wckey"           "workdir"           "wrap")
+  "List of allowed SBATCH keywords in SLURM submission scripts.")
 
-(defun slurm-in-doc/comment-region (pos)
-  (memq (get-char-property pos 'face)
-	(list font-lock-comment-face)))
+(defconst slurm-keywords-re
+  (concat "--" (regexp-opt slurm-keywords) "\\b")
+  "Regular expression matching SBATCH keywords in a SLURM job
+submission script.")
 
-(defun slurm-search-for-keyword (limit)
-  (let ((match-data-to-set nil)
-	found)
+(defun slurm-insert-directive (keyword)
+  "Interactively insert a SLURM directive of the form:
+
+#SBATCH --keyword
+"
+  (interactive
+   (list (completing-read "Keyword: "
+                          slurm-keywords nil t)))
+  (insert (concat "#SBATCH --" keyword " ")))
+
+(defun slurm-search-directive-1 (limit)
+  "Search for the next #SBATCH directive.
+
+Returns:
+- nil    if no SBATCH directives are found
+- error  if the following SBATCH directive is malformed
+- an integer corresponding to the point position of the next SBATCH
+   directive beginning if it is found and well-formed."
+
+  ;; Find #SBATCH directive
+  (when (re-search-forward "^\\s *#SBATCH\\b" limit t)
+    (let ((beg (match-beginning 0)))
+
+      ;; Find SBATCH keyword
+      (if (re-search-forward (concat "\\=\\s +" slurm-keywords-re "\\s *") limit t)
+          ;; Try to move point to the end of the argument
+          (progn
+            (cond
+             ;; No argument: end of line or beginning of comment
+             ((looking-at "\\(\\s<\\|$\\)")
+              t)
+             ;; Quoted argument
+             ((looking-at "\\s\"")
+              (forward-sexp))
+             ;; Unquoted argument
+             (t
+              (re-search-forward "\\=[^[:space:]#\n]+" limit t)))
+            beg)
+        'error))))
+
+(defun slurm-search-directive (limit)
+  (let (beg)
     (save-match-data
-      (while (and (null match-data-to-set)
-		  (re-search-forward slurm-search-list-re limit t))
-	(if (and (slurm-in-doc/comment-region (match-beginning 0))
-		 (slurm-in-doc/comment-region (match-end 0))) 
-	    (setq match-data-to-set (match-data)))))
-    (when match-data-to-set
-      (set-match-data match-data-to-set)
-      (goto-char (match-end 0)) 
+      (while (eq (setq beg (slurm-search-directive-1 limit)) 'error) t))
+    (unless (null beg)
+      (set-match-data (list beg (point)))
       t)))
 
 ;;;###autoload
-(define-minor-mode slurm-mode "highlight FIXMEs in comments and strings (as well as TODO BUG and KLUDGE"
-  :lighter " FIC" :group 'slurm-mode
-  (let ((kwlist '((slurm-search-for-keyword (0 'font-lock-slurm-face t)))))
+(define-minor-mode slurm-mode
+  "Edit SLURM job submission scripts.
+
+When slurm-mode is on, SBATCH directives are highlighted.
+This mode also provides a command to insert new SBATCH directives :
+  \\<slurm-mode-map>
+  \\[slurm-insert-directive] - `slurm-insert-directive'
+"
+  :lighter " slurm"
+  :group 'slurm
+  :keymap slurm-mode-map
+  (let ((kwlist `(("^\\s *\\(#SBATCH[^#\n]*\\)\\s *\\(#.*\\)?$" 1 font-lock-warning-face t)
+                  (slurm-search-directive 0 slurm-directives-face t))))
     (if slurm-mode
         (font-lock-add-keywords nil kwlist)
       (font-lock-remove-keywords nil kwlist))))
 
+;;;###autoload
 (defun turn-on-slurm-mode ()
-  "turn slurm-mode on"
+  "Turn slurm-mode on if SBATCH directives are found in the script."
   (interactive)
-  (slurm-mode 1))
+  (save-excursion
+    (goto-char (point-min))
+    (when (slurm-search-directive (point-max))
+      (slurm-mode 1))))
 
 (provide 'slurm-mode)
+
+;; slurm-mode.el ends here
