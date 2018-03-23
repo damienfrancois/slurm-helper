@@ -3,6 +3,15 @@ slurm-helper
 
 Bunch of helper files for the Slurm resource manager
 
+OPA topology
+------------
+
+`build_opa_slurm_topology.py` builds a  `topology.conf` file from the output of the `opaextractsellinks` command in a fat tree configuration.
+
+Typical usage: 
+
+        opaextractsellinks | python parse_opaextractsellinks.py
+
 Bash completion
 ---------------
 
