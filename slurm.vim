@@ -1,10 +1,41 @@
-" Vim syntax file
-" Language:		Slurm submission scripts
-" Maintainer:		Dr. Damien François. <damien.francois@uclouvain.Be>
-" Last Change:		April 11, 2012
-" Version:		091
-" URL:		http://perso.uclouvain.be/damien.francois
-
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"
+" Vim syntax file for completion for Slurm
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"  Copyright (C) 2012 Damien François. <damien.francois@uclouvain.Be>
+"  Written by Damien François. <damien.francois@uclouvain.Be>.
+"
+"  This file is part of SLURM, a resource management program.
+"  For details, see <https://slurm.schedmd.com/>.
+"  Please also read the included file: DISCLAIMER.
+"
+"  SLURM is free software; you can redistribute it and/or modify it under
+"  the terms of the GNU General Public License as published by the Free
+"  Software Foundation; either version 2 of the License, or (at your option)
+"  any later version.
+"
+"  In addition, as a special exception, the copyright holders give permission
+"  to link the code of portions of this program with the OpenSSL library under
+"  certain conditions as described in each individual source file, and
+"  distribute linked combinations including the two. You must obey the GNU
+"  General Public License in all respects for all of the code used other than
+"  OpenSSL. If you modify file(s) with this exception, you may extend this
+"  exception to your version of the file(s), but you are not obligated to do
+"  so. If you do not wish to do so, delete this exception statement from your
+"  version.  If you delete this exception statement from all source files in
+"  the program, then also delete it here.
+"
+"  SLURM is distributed in the hope that it will be useful, but WITHOUT ANY
+"  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+"  FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+"  details.
+"
+"  You should have received a copy of the GNU General Public License along
+"  with SLURM; if not, write to the Free Software Foundation, Inc.,
+"  51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA.
+"
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " handling /bin/sh with is_kornshell/is_sh {{{1
 " b:is_sh is set when "#! /bin/sh" is found;
@@ -36,7 +67,7 @@ endif
 " ===================
 " Slurm SBATCH comments are one liners beginning with #SBATCH and containing
 " the keyword (i.e.SBATCH), one option (here only options starting with -- are
-" considered), and one optional value. 
+" considered), and one optional value.
 syn region	shSlurmComment start="^#SBATCH" end="\n" oneline contains=shSlurmKeyword,shSlurmOption,shSlurmValue
 " all shSlurmString are suspect; they probably could be narrowed down to more
 " specific regular expressions. Typical example is --mail-type or --begin
@@ -53,14 +84,15 @@ syn match    	shSlurmOption	contained	'--checkpoint-dir=' nextgroup=shSlurmStrin
 syn match    	shSlurmOption	contained	'--comment=' nextgroup=shSlurmIdentifier
 syn match    	shSlurmOption	contained	'--constraint=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--contiguous'
-syn match    	shSlurmOption	contained	'--cpu-bind==' nextgroup=shSlurmString
+syn match    	shSlurmOption	contained	'--cpu-bind=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--cpus-per-task=' nextgroup=shSlurmNumber
 syn match    	shSlurmOption	contained	'--dependency=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--workdir=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--error=' nextgroup=shSlurmString
-syn match    	shSlurmOption	contained	'--exclusive' 
+syn match    	shSlurmOption	contained	'--profile=' nextgroup=shSlurmString
+syn match    	shSlurmOption	contained	'--exclusive'
 syn match    	shSlurmOption	contained	'--nodefile=' nextgroup=shSlurmString
-syn match    	shSlurmOption	contained	'--get-user-env' 
+syn match    	shSlurmOption	contained	'--get-user-env'
 syn match    	shSlurmOption	contained	'--get-user-env=' nextgroup=shSlurmEnv
 syn match    	shSlurmOption	contained	'--gid=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--hint=' nextgroup=shSlurmHint
@@ -68,7 +100,7 @@ syn match    	shSlurmOption	contained	'--immediate' nextgroup=shSlurmNumber
 syn match    	shSlurmOption	contained	'--input=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--job-name=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--job-id=' nextgroup=shSlurmNumber
-syn match    	shSlurmOption	contained	'--no-kill' 
+syn match    	shSlurmOption	contained	'--no-kill'
 syn match    	shSlurmOption	contained	'--licences=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--distribution=' nextgroup=shSlurmDist
 syn match 	shSlurmOption	contained	'--mail-user=' nextgroup=shSlurmEmail
@@ -88,17 +120,17 @@ syn match    	shSlurmOption	contained	'--nice=' nextgroup=shSlurmNumber
 syn match    	shSlurmOption	contained	'--no-requeue'
 syn match 	shSlurmOption	contained	'--ntasks-per-core=' nextgroup=shSlurmNumber
 syn match    	shSlurmOption	contained	'--ntasks-per-socket=' nextgroup=shSlurmNumber
-syn match    	shSlurmOption	contained	'--ntasls-per-node=' nextgroup=shSlurmNumber
-syn match    	shSlurmOption	contained	'--overcommit' 
+syn match    	shSlurmOption	contained	'--ntasks-per-node=' nextgroup=shSlurmNumber
+syn match    	shSlurmOption	contained	'--overcommit'
 syn match    	shSlurmOption	contained	'--output=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--open-mode=' nextgroup=shSlurmMode
 syn match    	shSlurmOption	contained	'--partition=' nextgroup=shSlurmString
-syn match    	shSlurmOption	contained	'--propagate' 
+syn match    	shSlurmOption	contained	'--propagate'
 syn match    	shSlurmOption	contained	'--propagate=' nextgroup=shSlurmPropag
-syn match    	shSlurmOption	contained	'--quiet' 
+syn match    	shSlurmOption	contained	'--quiet'
 syn match    	shSlurmOption	contained	'--requeue'
 syn match    	shSlurmOption	contained	'--reservation=' nextgroup=shSlurmString
-syn match    	shSlurmOption	contained	'--share' 
+syn match    	shSlurmOption	contained	'--share'
 syn match    	shSlurmOption	contained	'--signal=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--time=' nextgroup=shSlurmDuration
 syn match    	shSlurmOption	contained	'--tasks-per-node=' nextgroup=shSlurmNumber
@@ -109,7 +141,7 @@ syn match    	shSlurmOption	contained	'--wckey=' nextgroup=shSlurmString
 syn match    	shSlurmOption	contained	'--wrap=' nextgroup=shSlurmString
 syn match 	shSlurmOption	contained	'--exclude=' nextgroup=shSlurmString
 syn region	shSlurmValue start="=" end="$" contains=shSlurmNoshSlurmEnvdeInfo,shSlurmString,shSlurmMailType,shSlurmIdentifier,shSlurmEnv,shSlurmHint,shSlurmMode,shSlurmPropag,shSlurmInterval,shSlurmDist,shSlurmEmail
-syn match 	shSlurmNumber	contained	'\d\d*'
+syn match 	shSlurmNumber	contained	'\d\d*[mMGg]\?'
 syn match 	shSlurmDuration	contained	'\d\d*\(:\d\d\)\{,2}'
 syn match 	shSlurmNodeInfo	contained	'\d\d*\(:\d\d*\)\{,2}'
 syn match 	shSlurmDuration	contained	'\d\d*-\d\=\d\(:\d\d\)\{,2}'
@@ -143,4 +175,3 @@ hi def link shSlurmPropag	Special
 hi def link shSlurmInterval	Special
 hi def link shSlurmDist	Special
 hi def link shSlurmEmail	Special
-
